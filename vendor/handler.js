@@ -1,4 +1,6 @@
-const events = require('../hub');
+'use strict';
+
+const eventEmitter = require('../hub');
 const Chance = require('chance');
 const chance = new Chance();
 
@@ -6,12 +8,12 @@ module.exports = {
   pickup: (storeName) => {
     const order = {
       store: storeName,
-      orderId: chance.guild(),
+      orderId: chance.guid(),
       customer: chance.name(),
       address: chance.city() + ', ' + chance.state(),
     };
     console.log('VENDOR: Emitting a pickup event');
-    events.emit('pickup', order);
+    eventEmitter.emit('pickup', order);
   },
 
   thank: (order) => {

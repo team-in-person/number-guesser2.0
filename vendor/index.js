@@ -1,3 +1,5 @@
+'use strict';
+
 const events = require ('../hub.js');
 const handler = require ('./handler.js');
 

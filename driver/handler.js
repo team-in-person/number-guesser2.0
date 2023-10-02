@@ -1,11 +1,16 @@
 'use strict';
 
-const eventEmitter = require('../eventPool');
+const eventEmitter = require('../hub');
 
-function handleDelivered(payload) {
-  console.log('The package has been delivered!', payload);
-  eventEmitter.emit('delivered', payload);
-}
+module.exports = {
+  pickup: (order) => {
+    console.log(`DRIVER: picked up order #${order.orderId}`);
 
-module.exports = handleDelivered;
+    eventEmitter.emit('in-transit', order);
 
+    setTimeout(()=> {
+      console.log(`DRIVER: delivered order #${order.orderId}`);
+      eventEmitter.emit('delivered', order);
+    }, 3000);
+  },
+};
