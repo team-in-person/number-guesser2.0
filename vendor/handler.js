@@ -1,8 +1,9 @@
 'use strict';
 
-const eventEmitter = require('../hub');
 const Chance = require('chance');
 const chance = new Chance();
+
+const socket = require('socket.io-client')('http://localhost:3002/caps');
 
 module.exports = {
   pickup: (storeName) => {
@@ -13,7 +14,10 @@ module.exports = {
       address: chance.city() + ', ' + chance.state(),
     };
     console.log('VENDOR: Emitting a pickup event');
-    eventEmitter.emit('pickup', order);
+
+    // Emitting the 'pickup' event to the server
+    console.log('Emitting pickup with payload:', order);
+    socket.emit('pickup', order);
   },
 
   thank: (order) => {

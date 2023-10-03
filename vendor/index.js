@@ -1,13 +1,18 @@
 'use strict';
 
-const events = require ('../hub.js');
-const handler = require ('./handler.js');
+const socket = require('socket.io-client')('http://localhost:3002/caps');
+const handler = require('./handler.js');
 
-function handlePickup() {
-  const vendorName = 'Super Supplier';
-  handler.pickup(vendorName);
-} 
+// Connect to the server and join the vendor room
+socket.on('connect', () => {
+  socket.emit('join', 'Super Supplier');
 
-handlePickup();
+  // Emit pickup event regularly to simulate new orders
+  setInterval(() => {
+    console.log('VENDOR: Emitting a pickup event');
+    handler.pickup('Super Supplier');
+  }, 10000); // 10 SECOND INTERVALS
+});
 
-events.on('delivered', handler.thank);
+// Listening for the 'delivered' event from the server
+socket.on('delivered', handler.thank);
