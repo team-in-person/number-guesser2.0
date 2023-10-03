@@ -1,16 +1,18 @@
 'use strict';
 
-const eventEmitter = require('../hub');
-
 module.exports = {
-  pickup: (order) => {
+  pickup: (order, socket) => { 
+    console.log(`Received pickup event for order #${order.orderId}`); 
     console.log(`DRIVER: picked up order #${order.orderId}`);
 
-    eventEmitter.emit('in-transit', order);
+    // Emitting 'in-transit' to the server
+    socket.emit('in-transit', order);
 
-    setTimeout(()=> {
+    setTimeout(() => {
       console.log(`DRIVER: delivered order #${order.orderId}`);
-      eventEmitter.emit('delivered', order);
-    }, 3000);
+      
+      // Emitting 'delivered' to the server
+      socket.emit('delivered', order);
+    }, 10000);
   },
 };
