@@ -14,6 +14,6 @@ module.exports = {
       
       // Emitting 'delivered' to the server
       socket.emit('delivered', order);
-    }, 10000);
+    }, 8000); // SECOND INTERVALS
   },
 };

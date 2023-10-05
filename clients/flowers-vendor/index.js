@@ -14,7 +14,7 @@ socket.on('connect', () => {
   setInterval(() => {
     console.log('1-800-Flowers: Emitting a pickup event');
     handler.pickup('1-800-Flowers');
-  }, 10000); // 10 SECOND INTERVALS
+  }, 8000); // SECOND INTERVALS
 });
 
 // Listening for the 'delivered' event from the server

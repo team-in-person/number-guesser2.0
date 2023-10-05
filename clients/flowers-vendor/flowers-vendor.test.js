@@ -2,19 +2,21 @@
 
 const io = require('socket.io-client');
 
-describe('Driver Client Application', () => {
+describe('Vendor Client Application', () => {
   let socket;
 
+  // Connect to the server before running tests
   beforeAll((done) => {
     socket = io('http://localhost:3002/caps');
     socket.on('connect', done);
   }, 10000); // Setting timeout to 10 seconds
 
+  // Disconnect after tests are complete
   afterAll(() => {
     socket.disconnect();
   });
 
-  it('should receive pickup event and emit in-transit', (done) => {
+  it('should emit pickup event with correct payload', (done) => {
     const testPayload = {
       store: '1-800-Flowers',
       orderId: 'testOrder123',
@@ -22,13 +24,11 @@ describe('Driver Client Application', () => {
       address: '123 Main St',
     };
 
-    // Emulate the vendor emitting a pickup event
     socket.emit('pickup', testPayload);
 
-    // The driver should respond to the pickup with in-transit
-    socket.on('in-transit', (payload) => {
+    socket.on('pickup', (payload) => {
       expect(payload).toEqual(testPayload);
       done();
-    }); 
-  }, 10000); // Timeout 10 seconds
+    });
+  }, 10000);  // Setting timeout to 10 seconds
 });
