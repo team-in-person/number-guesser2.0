@@ -1,6 +1,6 @@
 'use strict';
 
-const events = require('../hub');
+const events = require('../../hub');
 const handler = require('./handler');
 
 jest.mock('../hub', () => {
