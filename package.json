@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --verbose --coverage",
-    "start": "node server/index.js"
-    "vendor": "node vendor",
-    "driver": "node driver"
+    "start": "node server/index.js",
+    "player1": "node playerOne",
+    "player2": "node playerTwo",
+    "player3": "node playerThree",
+    "player4": "node playerFour"
     
   },
   "keywords": [],

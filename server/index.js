@@ -32,25 +32,29 @@ gameServer.on('connection', (socket) => {
     console.log(`Socket ${socket.id} joined game room: ${playerId}`);
   });
 
-  socket.on('guess', (playerId, guess) => {
-    guesses.push({ playerId, guess });
+  socket.on('guess', guessObj => {
+    console.log(guessObj);
+    let { guess, playerId } = guessObj; 
+    guesses.push({ guess, playerId });
 
     // If two players have guessed
-    if (guesses.length === 2) {
-      const player1Diff = Math.abs(randomNum - guesses[0].guess);
-      const player2Diff = Math.abs(randomNum - guesses[1].guess);
-      
-      let winnerId;
-      if (player1Diff < player2Diff) {
-        winnerId = guesses[0].playerId;
-      } else if (player1Diff > player2Diff) {
-        winnerId = guesses[1].playerId;
-      } else {
-        winnerId = 'Tie'; // In case of a tie
+    if (guesses.length === 4) {
+      let closestPlayerId = guesses[0].playerId;
+      let closestDiff = Math.abs(randomNum - guesses[0].guess);
+  
+      for (let i = 1; i < 4; i++) {
+        const currentDiff = Math.abs(randomNum - guesses[i].guess);
+  
+        if (currentDiff < closestDiff) {
+          closestPlayerId = guesses[i].playerId;
+          closestDiff = currentDiff;
+        } else if (currentDiff === closestDiff) {
+          closestPlayerId = 'Tie'; // If there's a tie, this will overwrite the closest player. If more players have the same tie, it will remain as 'Tie'
+        }
       }
-
+      console.log(`The winner is ${closestPlayerId}, the correct number was ${randomNum}`);
       // Broadcast the winner
-      broadcastToRoom('game', 'winner', { winnerId, correctNumber: randomNum });
+      broadcastToRoom('game', 'winner', { winnerId: closestPlayerId, correctNumber: randomNum });
 
       // Optionally start a new game immediately or let the interval handle it
       startNewGame();
