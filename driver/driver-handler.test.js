@@ -1,14 +1,14 @@
 'use strict';
 
-const eventEmitter = require('../hub.js');
+// const eventEmitter = require('../hub.js');
 const handler = require('./handler.js');
 
-jest.mock('../hub', () => {
-  return{
-    on: jest.fn(),
-    emit: jest.fn(),
-  };
-});
+// jest.mock('../hub.js', () => {
+//   return{
+//     on: jest.fn(),
+//     emit: jest.fn(),
+//   };
+// });
 
 describe('Driver Handlers', () => {
   it('Should log pickup and emit in-transit event', () => {
@@ -18,11 +18,16 @@ describe('Driver Handlers', () => {
       orderId: '54321',
       customer: 'Mary Jane',
     };
+
+    const mockEmitter = {
+      on: jest.fn(),
+      emit: jest.fn(),
+    };
     
-    handler.pickup(order);
+    handler.pickup(order, mockEmitter);
 
     expect(console.log).toHaveBeenCalledWith('DRIVER: picked up order #54321');
-    expect(eventEmitter.emit).toHaveBeenCalledWith('in-transit', order);
+    expect(mockEmitter.emit).toHaveBeenCalledWith('in-transit', order);
   });
 });
 

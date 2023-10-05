@@ -12,7 +12,7 @@ const io = socketIo(server);
 const caps = io.of('/caps');
 
 caps.on('connection', (socket) => {
-  console.log('Connected', socket.id);
+  // console.log('Connected', socket.id);
 
   socket.on('join', (room) => {
     console.log('Joined Room', room);
