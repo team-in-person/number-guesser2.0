@@ -6,6 +6,9 @@
   "scripts": {
     "test": "jest --verbose --coverage",
     "start": "node server/index.js"
+    "vendor": "node vendor",
+    "driver": "node driver"
+    
   },
   "keywords": [],
   "author": "",
