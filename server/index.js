@@ -1,49 +1,65 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const vendorHandler = require('../vendor/handler');
-const driverHandler = require('../driver/handler');
 
 const app = express();
 const PORT = 3002;
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const caps = io.of('/caps');
+const gameServer = io.of('/game');
 
-caps.on('connection', (socket) => {
-  console.log('Connected', socket.id);
+let randomNum = Math.floor(Math.random() * 20) + 1;
+let guesses = [];
 
-  socket.on('join', (room) => {
-    console.log('Joined Room', room);
-    socket.join(room);
+function broadcastToRoom(room, event, payload) {
+  gameServer.to(room).emit(event, payload);
+}
+
+function startNewGame() {
+  randomNum = Math.floor(Math.random() * 20) + 1;
+  guesses = [];  // Reset guesses
+  broadcastToRoom('game', 'new-game', 'New game! Guess a number between 1 and 20.');
+}
+
+const gameInterval = setInterval(startNewGame, 10000);
+
+gameServer.on('connection', (socket) => {
+  console.log(`Client connected to 'game' namespace: ${socket.id}`);
+
+  socket.on('join', (playerId) => {
+    socket.join(playerId);
+    console.log(`Socket ${socket.id} joined game room: ${playerId}`);
   });
 
-  // Pickup from vendor
-  socket.on('pickup', (payload) => {
-    console.log('SERVER: Received pickup event from vendor:', payload);
-    socket.broadcast.emit('pickup', payload); 
+  socket.on('guess', (playerId, guess) => {
+    guesses.push({ playerId, guess });
+
+    // If two players have guessed
+    if (guesses.length === 2) {
+      const player1Diff = Math.abs(randomNum - guesses[0].guess);
+      const player2Diff = Math.abs(randomNum - guesses[1].guess);
+      
+      let winnerId;
+      if (player1Diff < player2Diff) {
+        winnerId = guesses[0].playerId;
+      } else if (player1Diff > player2Diff) {
+        winnerId = guesses[1].playerId;
+      } else {
+        winnerId = 'Tie'; // In case of a tie
+      }
+
+      // Broadcast the winner
+      broadcastToRoom('game', 'winner', { winnerId, correctNumber: randomNum });
+
+      // Optionally start a new game immediately or let the interval handle it
+      startNewGame();
+    }
   });
 
-  // In-transit from driver
-  socket.on('in-transit', (payload) => {
-    console.log('SERVER: Received in-transit event from driver:', payload); 
-    caps.to(payload.store).emit('in-transit', payload);
-  });
-
-  // Delivered from driver
-  socket.on('delivered', (payload) => {
-    console.log('SERVER: Received delivered event from driver:', payload);
-    caps.to(payload.store).emit('delivered', payload);
-  });
-});
-
-app.get('/simulate-pickup', (req, res) => {
-  const storeName = '1-206-flowers'; 
-  // We don't need to simulate this here since your vendor client should be doing this
-  res.send('Simulated a pickup event!');
 });
 
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
