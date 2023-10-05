@@ -14,7 +14,7 @@ socket.on('connect', () => {
   setInterval(() => {
     console.log('Acme-Widgets: Emitting a pickup event');
     handler.pickup('Acme-Widgets');
-  }, 10000); // 10 SECOND INTERVALS
+  }, 8000); // SECOND INTERVALS
 });
 
 // Listening for the 'delivered' event from the server
