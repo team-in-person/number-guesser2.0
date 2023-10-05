@@ -5,12 +5,12 @@ const handler = require('./handler.js');
 
 // Connect to the server and join the vendor room
 socket.on('connect', () => {
-  socket.emit('join', 'Super Supplier');
+  socket.emit('join', 'Acme-Widgets');
 
   // Emit pickup event regularly to simulate new orders
   setInterval(() => {
-    console.log('VENDOR: Emitting a pickup event');
-    handler.pickup('Super Supplier');
+    console.log('Acme-Widgets: Emitting a pickup event');
+    handler.pickup('Acme-Widgets');
   }, 10000); // 10 SECOND INTERVALS
 });
 
