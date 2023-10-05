@@ -2,7 +2,7 @@
 
 module.exports = {
   pickup: (message, socket) => { 
-    const order = message.order;
+    const order = message;
 
     console.log(`DRIVER: picked up order #${order.orderId}`);
 

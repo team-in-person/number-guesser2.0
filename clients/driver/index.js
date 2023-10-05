@@ -16,17 +16,14 @@ socket.on('error', (error) => {
 // Log when the driver receives a 'pickup' event and then call the handler.
 socket.on('pickup', (order) => {
   console.log('DRIVER: Received a pickup event from server:', order);
+  
   handler.pickup(order, socket);
-});
-
-socket.on('pickup', (message) => {
-  handler.pickup(message, socket);
 
   // Acknowledge the reception of the message
   socket.emit('received', {
     clientId: 'driver',
     event: 'pickup',
-    messageId: message.orderId,
+    messageId: order.orderId,
   });
 });
 
