@@ -18,3 +18,17 @@ socket.on('pickup', (order) => {
   console.log('DRIVER: Received a pickup event from server:', order);
   handler.pickup(order, socket);
 });
+
+socket.on('pickup', (message) => {
+  handler.pickup(message, socket);
+
+  // Acknowledge the reception of the message
+  socket.emit('received', {
+    clientId: 'driver',
+    event: 'pickup',
+    messageId: message.orderId,
+  });
+});
+
+// Fetch all undelivered messages for this driver related to pickups
+socket.emit('getAll', { clientId: 'driver', event: 'pickup' });

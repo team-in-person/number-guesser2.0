@@ -20,8 +20,9 @@ module.exports = {
     console.log('Emitting pickup with payload:', order);
     socket.emit('pickup', order);
   },
-
-  thank: (order) => {
+  
+  thank: (message) => {
+    const order = message.order;
     console.log(`Acme-Widgets: Thank you for delivering ${order.orderId} to ${order.customer}`);
   },
 };

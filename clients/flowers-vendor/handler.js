@@ -21,7 +21,8 @@ module.exports = {
     socket.emit('pickup', order);
   },
 
-  thank: (order) => {
+  thank: (message) => {
+    const order = message.order;
     console.log(`1-800-Flowers: Thank you for delivering ${order.orderId} to ${order.customer}`);
   },
 };
