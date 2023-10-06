@@ -1,7 +1,7 @@
 'use strict';
 
 // const eventEmitter = require('../hub.js');
-const handler = require('./handler.js');
+const handler = require('../playerOne/handler.js');
 
 // jest.mock('../hub.js', () => {
 //   return{
